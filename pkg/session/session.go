@@ -2388,6 +2388,16 @@ func runStmt(ctx context.Context, se *session, s sqlexec.Statement) (rs sqlexec.
 	}
 
 	se.SetValue(sessionctx.QueryString, s.OriginText())
+
+	// Print QueryString.
+	val := se.Value(sessionctx.QueryString)
+	sqlText, ok := val.(string)
+	if !ok {
+		fmt.Println("No SQL text found or not a string")
+	} else {
+		fmt.Println("SQL text:", sqlText)
+	}
+
 	if _, ok := s.(*executor.ExecStmt).StmtNode.(ast.DDLNode); ok {
 		se.SetValue(sessionctx.LastExecuteDDL, true)
 	} else {
