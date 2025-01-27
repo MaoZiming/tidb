@@ -856,6 +856,14 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 		}
 	}
 
+	// Print value
+	val := s.Value(sessionctx.QueryString)
+	if val != nil {
+		fmt.Printf("Query string is: %v\n", val)
+	} else {
+		fmt.Println("No query string found in session values")
+	}
+
 	err := txn.Commit(ctx)
 	if err != nil {
 		return err
