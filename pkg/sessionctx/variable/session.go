@@ -1560,6 +1560,9 @@ type SessionVars struct {
 	// OptObjectiveModerate: The default value. The optimizer considers the real-time stats (real-time row count, modify count).
 	// OptObjectiveDeterminate: The optimizer doesn't consider the real-time stats.
 	OptObjective string
+
+	// This is for consistent caches.
+	GuardValue string
 }
 
 // GetOptimizerFixControlMap returns the specified value of the optimizer fix control.
@@ -1629,6 +1632,12 @@ func (s *SessionVars) SetAlloc(alloc chunk.Allocator) {
 		return
 	}
 	s.ChunkPool.Alloc = alloc
+}
+
+func (s *SessionVars) SetGuard(guardValue string) {
+	if !s.EnableReuseCheck {
+		s.GuardValue = guardValue
+	}
 }
 
 // IsAllocValid check if chunk reuse is enable or ChunkPool is inused.

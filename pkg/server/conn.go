@@ -45,6 +45,7 @@ import (
 	"io"
 	"net"
 	"os/user"
+	"regexp"
 	"runtime/pprof"
 	"runtime/trace"
 	"strconv"
@@ -1765,6 +1766,24 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 
 	// Print or log the raw SQL statement
 	fmt.Println("Raw SQL:", sql)
+
+	guardPattern := regexp.MustCompile(`\s*GUARD\s+(\d+)\s*$`)
+
+	var guardValue string
+	match := guardPattern.FindStringSubmatch(sql)
+
+	if len(match) > 1 {
+		// Extract the numeric value inside the brackets
+		guardValue = match[1]
+		// Remove "GUARD u32"
+		sql = strings.TrimSpace(guardPattern.ReplaceAllString(sql, ""))
+	}
+
+	fmt.Println("Processed SQL:", sql)
+	if guardValue != "" {
+		fmt.Println("Extracted Guard Value:", guardValue)
+	}
+	cc.ctx.GetSessionVars().SetGuard(guardValue)
 
 	sessVars := cc.ctx.GetSessionVars()
 	sc := sessVars.StmtCtx

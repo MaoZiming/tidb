@@ -440,6 +440,12 @@ func IsFastPlan(p plannercore.Plan) bool {
 // like the INSERT, UPDATE statements, it executes in this function. If the Executor returns
 // result, execution is done after this function returns, in the returned sqlexec.RecordSet Next method.
 func (a *ExecStmt) Exec(ctx context.Context) (_ sqlexec.RecordSet, err error) {
+
+	guardValue := a.Ctx.GetSessionVars().GuardValue
+	if guardValue != "" {
+		fmt.Println("Exec Guard Value: ", guardValue)
+	}
+
 	defer func() {
 		r := recover()
 		if r == nil {
@@ -1200,11 +1206,20 @@ func (a *ExecStmt) buildExecutor() (exec.Executor, error) {
 }
 
 func (a *ExecStmt) openExecutor(ctx context.Context, e exec.Executor) (err error) {
+
+	guardValue := a.Ctx.GetSessionVars().GuardValue
+	if guardValue != "" {
+		fmt.Println("openExecutor Guard Value: ", guardValue)
+	}
+
+	fmt.Printf("Executor Type: %T\n", e)
+
 	defer func() {
 		if r := recover(); r != nil {
 			err = errors.New(fmt.Sprint(r))
 		}
 	}()
+
 	start := time.Now()
 	err = e.Open(ctx)
 	a.phaseOpenDurations[0] += time.Since(start)

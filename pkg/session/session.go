@@ -864,6 +864,11 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 		fmt.Println("No query string found in session values")
 	}
 
+	guardValue := s.sessionVars.GuardValue
+	if guardValue != "" {
+		fmt.Println("commitTxnWithTemporaryData Guard Value:", guardValue)
+	}
+
 	err := txn.Commit(ctx)
 	if err != nil {
 		return err
@@ -2404,6 +2409,11 @@ func runStmt(ctx context.Context, se *session, s sqlexec.Statement) (rs sqlexec.
 		fmt.Println("No SQL text found or not a string")
 	} else {
 		fmt.Println("SQL text:", sqlText)
+	}
+
+	guardValue := se.sessionVars.GuardValue
+	if guardValue != "" {
+		fmt.Println("runStmt Guard Value: ", guardValue)
 	}
 
 	if _, ok := s.(*executor.ExecStmt).StmtNode.(ast.DDLNode); ok {
