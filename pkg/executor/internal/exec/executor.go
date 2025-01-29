@@ -69,6 +69,7 @@ type BaseExecutor struct {
 	id            int
 	initCap       int
 	maxChunkSize  int
+	GuardValue    string
 }
 
 // NewBaseExecutor creates a new BaseExecutor instance.
@@ -81,6 +82,7 @@ func NewBaseExecutor(ctx sessionctx.Context, schema *expression.Schema, id int, 
 		initCap:      ctx.GetSessionVars().InitChunkSize,
 		maxChunkSize: ctx.GetSessionVars().MaxChunkSize,
 		AllocPool:    ctx.GetSessionVars().ChunkPool.Alloc,
+		GuardValue:   "",
 	}
 	if ctx.GetSessionVars().StmtCtx.RuntimeStatsColl != nil {
 		if e.id > 0 {

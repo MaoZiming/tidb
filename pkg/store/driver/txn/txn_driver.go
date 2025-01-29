@@ -17,6 +17,7 @@ package txn
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"sync/atomic"
 	"time"
 
@@ -96,6 +97,7 @@ func (txn *tikvTxn) LockKeysFunc(ctx context.Context, lockCtx *kv.LockCtx, fn fu
 }
 
 func (txn *tikvTxn) Commit(ctx context.Context) error {
+	fmt.Println("func (txn *tikvTxn) Commit(ctx context.Context)")
 	err := txn.KVTxn.Commit(ctx)
 	return txn.extractKeyErr(err)
 }

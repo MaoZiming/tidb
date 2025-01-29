@@ -199,10 +199,13 @@ func (e *InsertValues) lazilyInitColDefaultValBuf() (ok bool) {
 
 // insertRows processes `insert|replace into values ()` or `insert|replace into set x=y`
 func insertRows(ctx context.Context, base insertCommon) (err error) {
+
 	e := base.insertCommon()
 	sessVars := e.Ctx().GetSessionVars()
 	batchSize := sessVars.DMLBatchSize
 	batchInsert := sessVars.BatchInsert && !sessVars.InTxn() && variable.EnableBatchDML.Load() && batchSize > 0
+
+	fmt.Println("insertRows: ", sessVars.GuardValue)
 
 	e.lazyFillAutoID = true
 	evalRowFunc := e.fastEvalRow
@@ -1404,6 +1407,8 @@ func (e *InsertValues) addRecordWithAutoIDHint(
 	ctx context.Context, row []types.Datum, reserveAutoIDCount int,
 ) (err error) {
 	vars := e.Ctx().GetSessionVars()
+
+	fmt.Println("addRecordWithAutoIDHint", vars.GuardValue)
 	if !vars.ConstraintCheckInPlace {
 		vars.PresumeKeyNotExists = true
 	}

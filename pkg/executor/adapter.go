@@ -1212,6 +1212,7 @@ func (a *ExecStmt) openExecutor(ctx context.Context, e exec.Executor) (err error
 		fmt.Println("openExecutor Guard Value: ", guardValue)
 	}
 
+	e.Base().GuardValue = guardValue
 	fmt.Printf("Executor Type: %T\n", e)
 
 	defer func() {
