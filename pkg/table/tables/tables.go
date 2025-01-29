@@ -1034,13 +1034,6 @@ func (t *TableCommon) AddRecord(sctx sessionctx.Context, r []types.Datum, opts .
 	guardValue := sessVars.GuardValue // Retrieve GuardValue
 	fmt.Println("GuardValue at memBuffer.Set:", guardValue)
 
-	// Store GuardValue in KVTxn
-	tikvTxn, ok := txn.(*tikv.KVTxn)
-	if ok {
-		tikvTxn.GuardValue = guardValue
-		fmt.Println("GuardValue stored in KVTxn:", guardValue)
-	}
-
 	if setPresume {
 		flags := []kv.FlagsOp{kv.SetPresumeKeyNotExists}
 		if !sessVars.ConstraintCheckInPlacePessimistic && sessVars.TxnCtx.IsPessimistic && sessVars.InTxn() &&
