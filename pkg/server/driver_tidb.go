@@ -286,6 +286,12 @@ func (tc *TiDBContext) ExecuteStmt(ctx context.Context, stmt ast.StmtNode) (resu
 	if err = tc.checkSandBoxMode(stmt); err != nil {
 		return nil, err
 	}
+
+	guardValue := tc.GetSessionVars().GuardValue
+	if guardValue != "" {
+		fmt.Println("ExecuteStmt:", guardValue)
+	}
+
 	if s, ok := stmt.(*ast.NonTransactionalDMLStmt); ok {
 		rs, err = session.HandleNonTransactionalDML(ctx, s, tc.Session)
 	} else {

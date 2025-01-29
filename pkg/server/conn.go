@@ -1785,6 +1785,10 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 	}
 	cc.ctx.GetSessionVars().SetGuard(guardValue)
 
+	if guardValue != "" {
+		fmt.Println("Stored Guard Value:", cc.ctx.GetSessionVars().GuardValue)
+	}
+
 	sessVars := cc.ctx.GetSessionVars()
 	sc := sessVars.StmtCtx
 	prevWarns := sc.GetWarnings()
@@ -2091,6 +2095,12 @@ func (cc *clientConn) handleStmt(ctx context.Context, stmt ast.StmtNode, warns [
 	ctx = context.WithValue(ctx, util.RUDetailsCtxKey, util.NewRUDetails())
 	reg := trace.StartRegion(ctx, "ExecuteStmt")
 	cc.audit(plugin.Starting)
+
+	guardValue := cc.ctx.GetSessionVars().GuardValue
+	if guardValue != "" {
+		fmt.Println("handleStmt:", guardValue)
+	}
+
 	rs, err := cc.ctx.ExecuteStmt(ctx, stmt)
 	reg.End()
 	// - If rs is not nil, the statement tracker detachment from session tracker

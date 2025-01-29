@@ -1635,9 +1635,7 @@ func (s *SessionVars) SetAlloc(alloc chunk.Allocator) {
 }
 
 func (s *SessionVars) SetGuard(guardValue string) {
-	if !s.EnableReuseCheck {
-		s.GuardValue = guardValue
-	}
+	s.GuardValue = guardValue
 }
 
 // IsAllocValid check if chunk reuse is enable or ChunkPool is inused.

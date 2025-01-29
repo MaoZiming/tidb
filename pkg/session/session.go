@@ -2148,6 +2148,12 @@ func (s *session) ExecuteInternalStmt(ctx context.Context, stmtNode ast.StmtNode
 
 func (s *session) ExecuteStmt(ctx context.Context, stmtNode ast.StmtNode) (sqlexec.RecordSet, error) {
 	r, ctx := tracing.StartRegionEx(ctx, "session.ExecuteStmt")
+
+	guardValue := s.sessionVars.GuardValue
+	if guardValue != "" {
+		fmt.Println("ExecuteStmt Guard Value: ", guardValue)
+	}
+
 	defer r.End()
 
 	if err := s.PrepareTxnCtx(ctx); err != nil {
