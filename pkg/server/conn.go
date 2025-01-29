@@ -1762,6 +1762,10 @@ func (cc *clientConn) audit(eventType plugin.GeneralEvent) {
 // Some special queries like `load data` that does not return result, which is handled in handleFileTransInConn.
 func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 	defer trace.StartRegion(ctx, "handleQuery").End()
+
+	// Print or log the raw SQL statement
+	fmt.Println("Raw SQL:", sql)
+
 	sessVars := cc.ctx.GetSessionVars()
 	sc := sessVars.StmtCtx
 	prevWarns := sc.GetWarnings()
