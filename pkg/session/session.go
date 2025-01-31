@@ -869,6 +869,10 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 		fmt.Println("commitTxnWithTemporaryData Guard Value:", guardValue)
 	}
 
+	ctx = context.WithValue(ctx, "guardValue", guardValue) // Store it in context
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue from context:", guardValue_)
+
 	err := txn.Commit(ctx)
 	if err != nil {
 		return err

@@ -98,6 +98,9 @@ func (txn *tikvTxn) LockKeysFunc(ctx context.Context, lockCtx *kv.LockCtx, fn fu
 
 func (txn *tikvTxn) Commit(ctx context.Context) error {
 	fmt.Println("func (txn *tikvTxn) Commit(ctx context.Context)")
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue at Commit:", guardValue_)
+
 	err := txn.KVTxn.Commit(ctx)
 	return txn.extractKeyErr(err)
 }
