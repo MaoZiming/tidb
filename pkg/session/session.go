@@ -780,6 +780,16 @@ func (s *session) handleAssertionFailure(ctx context.Context, err error) error {
 func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transaction) error {
 	sessVars := s.sessionVars
 	txnTempTables := sessVars.TxnCtx.TemporaryTables
+
+	guardValue := s.sessionVars.GuardValue
+	if guardValue != "" {
+		fmt.Println("commitTxnWithTemporaryData Guard Value:", guardValue)
+	}
+
+	ctx = context.WithValue(ctx, "guardValue", guardValue) // Store it in context
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue from context:", guardValue_)
+
 	if len(txnTempTables) == 0 {
 		failpoint.Inject("mockSleepBeforeTxnCommit", func(v failpoint.Value) {
 			ms := v.(int)
@@ -863,15 +873,6 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 	} else {
 		fmt.Println("No query string found in session values")
 	}
-
-	guardValue := s.sessionVars.GuardValue
-	if guardValue != "" {
-		fmt.Println("commitTxnWithTemporaryData Guard Value:", guardValue)
-	}
-
-	ctx = context.WithValue(ctx, "guardValue", guardValue) // Store it in context
-	guardValue_, _ := ctx.Value("guardValue").(string)
-	fmt.Println("GuardValue from context:", guardValue_)
 
 	err := txn.Commit(ctx)
 	if err != nil {

@@ -61,10 +61,15 @@ func (e *InsertExec) exec(ctx context.Context, rows [][]types.Datum) error {
 		}
 		return tblName
 	}))
+
 	// If tidb_batch_insert is ON and not in a transaction, we could use BatchInsert mode.
 	sessVars := e.Ctx().GetSessionVars()
 	defer sessVars.CleanBuffers()
 	ignoreErr := sessVars.StmtCtx.DupKeyAsWarning
+
+	fmt.Println("InsertExec.exec: ", sessVars.GuardValue)
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue in context at InsertExec.exec:", guardValue_)
 
 	txn, err := e.Ctx().Txn(true)
 	if err != nil {

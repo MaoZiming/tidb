@@ -206,6 +206,8 @@ func insertRows(ctx context.Context, base insertCommon) (err error) {
 	batchInsert := sessVars.BatchInsert && !sessVars.InTxn() && variable.EnableBatchDML.Load() && batchSize > 0
 
 	fmt.Println("insertRows: ", sessVars.GuardValue)
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue in context at insertRows:", guardValue_)
 
 	e.lazyFillAutoID = true
 	evalRowFunc := e.fastEvalRow
@@ -232,6 +234,7 @@ func insertRows(ctx context.Context, base insertCommon) (err error) {
 			if err != nil {
 				return err
 			}
+			// Keep tracing from here.
 			if err = base.exec(ctx, rows); err != nil {
 				return err
 			}
@@ -252,7 +255,7 @@ func insertRows(ctx context.Context, base insertCommon) (err error) {
 	if err != nil {
 		return err
 	}
-	err = base.exec(ctx, rows)
+	err = base.exec(ctx, rows) // Keep tracing from here.
 	if err != nil {
 		return err
 	}

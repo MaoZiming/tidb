@@ -105,6 +105,9 @@ func PrintLongTimeInternalTxn(now time.Time, startTS uint64, runByFunction bool)
 
 // RunInNewTxn will run the f in a new transaction environment, should be used by inner txn only.
 func RunInNewTxn(ctx context.Context, store Storage, retryable bool, f func(ctx context.Context, txn Transaction) error) error {
+
+	fmt.Println("RunInNewTxn")
+
 	var (
 		err           error
 		originalTxnTS uint64
