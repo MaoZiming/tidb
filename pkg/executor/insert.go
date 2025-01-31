@@ -307,6 +307,10 @@ func (e *InsertExec) Next(ctx context.Context, req *chunk.Chunk) error {
 	}
 
 	fmt.Println("InsertExec: Next", e.Base().GuardValue)
+	ctx = context.WithValue(ctx, "guardValue", e.Base().GuardValue) // Store it in context
+	guardValue_, _ := ctx.Value("guardValue").(string)
+	fmt.Println("GuardValue from context:", guardValue_)
+
 	if !e.EmptyChildren() && e.Children(0) != nil {
 		return insertRowsFromSelect(ctx, e)
 	}
