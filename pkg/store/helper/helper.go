@@ -34,6 +34,7 @@ import (
 	"github.com/pingcap/errors"
 	deadlockpb "github.com/pingcap/kvproto/pkg/deadlock"
 	"github.com/pingcap/kvproto/pkg/kvrpcpb"
+	"github.com/pingcap/log"
 	"github.com/pingcap/tidb/pkg/ddl/placement"
 	"github.com/pingcap/tidb/pkg/kv"
 	"github.com/pingcap/tidb/pkg/metrics"
@@ -867,6 +868,19 @@ func (h *Helper) GetStoreRegionsInfo(storeID uint64) (*RegionsInfo, error) {
 func (h *Helper) GetRegionInfoByID(regionID uint64) (*RegionInfo, error) {
 	var regionInfo RegionInfo
 	err := h.requestPD("GetRegionByID", "GET", pdapi.RegionByID+"/"+strconv.FormatUint(regionID, 10), nil, &regionInfo)
+
+	if err == nil {
+		log.Info("Fetched Region Info from PD",
+			zap.Uint64("region_id", regionID),
+			zap.String("guard_value", regionInfo.GuardValue),
+		)
+	} else {
+		log.Error("Failed to fetch Region Info from PD",
+			zap.Uint64("region_id", regionID),
+			zap.Error(err),
+		)
+	}
+
 	return &regionInfo, err
 }
 

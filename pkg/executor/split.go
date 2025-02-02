@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/pingcap/kvproto/pkg/metapb"
+	"github.com/pingcap/log"
 	"github.com/pingcap/tidb/pkg/executor/internal/exec"
 	"github.com/pingcap/tidb/pkg/kv"
 	"github.com/pingcap/tidb/pkg/parser/model"
@@ -809,6 +810,9 @@ func getRegionMeta(tikvStore helper.Storage, regionMetas []*tikv.Region, uniqueR
 }
 
 func getRegionInfo(store helper.Storage, regions []regionMeta) ([]regionMeta, error) {
+
+	log.Info("Entering getRegionInfo", zap.Int("region_count", len(regions)))
+
 	// check pd server exists.
 	etcd, ok := store.(kv.EtcdBackend)
 	if !ok {
@@ -830,6 +834,16 @@ func getRegionInfo(store helper.Storage, regions []regionMeta) ([]regionMeta, er
 		if err != nil {
 			return nil, err
 		}
+
+		log.Info("Fetched region info",
+			zap.Uint64("region_id", regions[i].region.Id),
+			zap.Uint64("written_bytes", regionInfo.WrittenBytes),
+			zap.Uint64("read_bytes", regionInfo.ReadBytes),
+			zap.Int64("approximate_size", regionInfo.ApproximateSize),
+			zap.Int64("approximate_keys", regionInfo.ApproximateKeys),
+			zap.String("guard_value", regionInfo.GuardValue),
+		)
+
 		regions[i].writtenBytes = regionInfo.WrittenBytes
 		regions[i].readBytes = regionInfo.ReadBytes
 		regions[i].approximateSize = regionInfo.ApproximateSize
