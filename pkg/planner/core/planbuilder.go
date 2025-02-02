@@ -3225,7 +3225,7 @@ func buildShowDDLJobsFields() (*expression.Schema, types.NameSlice) {
 }
 
 func buildTableRegionsSchema() (*expression.Schema, types.NameSlice) {
-	schema := newColumnsWithNames(13)
+	schema := newColumnsWithNames(14)
 	schema.Append(buildColumnWithName("", "REGION_ID", mysql.TypeLonglong, 4))
 	schema.Append(buildColumnWithName("", "START_KEY", mysql.TypeVarchar, 64))
 	schema.Append(buildColumnWithName("", "END_KEY", mysql.TypeVarchar, 64))

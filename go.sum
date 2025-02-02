@@ -79,8 +79,8 @@ github.com/Joker/hpp v1.0.0/go.mod h1:8x5n+M1Hp5hC0g8okX3sR3vFQwynaX/UgSOM9MeBKz
 github.com/Joker/jade v1.0.1-0.20190614124447-d475f43051e7/go.mod h1:6E6s8o2AE4KhCrqr6GRJjdC/gNfTdxkIXvuGZZda2VM=
 github.com/MaoZiming/client-go/v2 v2.0.0-20250131215951-0a59194d5af0 h1:Pr/9PtXkt9i1V01G5P+PZI7lTbrzOpzWys44AxPu5EM=
 github.com/MaoZiming/client-go/v2 v2.0.0-20250131215951-0a59194d5af0/go.mod h1:4OQRxGifu53hiJ81mp78FldbX+IJCowUNHOqhX7Vr/A=
-github.com/MaoZiming/kvproto v0.0.0-20250202045127-3260842c3eb9 h1:2qcM1Zr+kyYz3/6MliBAT7BCpAQXXaeq+QlVXhP1tPM=
-github.com/MaoZiming/kvproto v0.0.0-20250202045127-3260842c3eb9/go.mod h1:r0q/CFcwvyeRhKtoqzmWMBebrtpIziQQ9vR+JKh1knc=
+github.com/MaoZiming/kvproto v0.0.0-20250202081729-2b83095783cb h1:tlgZV+XsJch/jUAY3yMkbapKxZQxSCsH2KpKc/Qu+HM=
+github.com/MaoZiming/kvproto v0.0.0-20250202081729-2b83095783cb/go.mod h1:r0q/CFcwvyeRhKtoqzmWMBebrtpIziQQ9vR+JKh1knc=
 github.com/MaoZiming/tipb v0.0.0-20240507090649-2bf6bb0cb996 h1:/gsHD/3prRCk2xvU4L2p/WuUYxSR0bbIQXEPOwm/jzE=
 github.com/MaoZiming/tipb v0.0.0-20240507090649-2bf6bb0cb996/go.mod h1:A7mrd7WHBl1o63LE2bIBGEJMTNWXqhgmYiOvMLxozfs=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
