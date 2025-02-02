@@ -626,6 +626,7 @@ type regionMeta struct {
 
 	// this is for propagating scheduling info for this region
 	physicalID int64
+	guardValue string
 }
 
 func getPhysicalTableRegions(physicalTableID int64, tableInfo *model.TableInfo, tikvStore helper.Storage, s kv.SplittableStore, uniqueRegionMap map[uint64]struct{}) ([]regionMeta, error) {
@@ -833,6 +834,7 @@ func getRegionInfo(store helper.Storage, regions []regionMeta) ([]regionMeta, er
 		regions[i].readBytes = regionInfo.ReadBytes
 		regions[i].approximateSize = regionInfo.ApproximateSize
 		regions[i].approximateKeys = regionInfo.ApproximateKeys
+		regions[i].guardValue = regionInfo.GuardValue
 	}
 	return regions, nil
 }

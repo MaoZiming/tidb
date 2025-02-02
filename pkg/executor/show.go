@@ -2222,6 +2222,7 @@ func (e *ShowExec) fillRegionsToChunk(regions []showTableRegionRowItem) {
 		e.result.AppendInt64(10, regions[i].approximateKeys)
 		e.result.AppendString(11, regions[i].schedulingConstraints)
 		e.result.AppendString(12, regions[i].schedulingState)
+		e.result.AppendString(13, regions[i].guardValue)
 	}
 }
 

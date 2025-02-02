@@ -628,6 +628,7 @@ type RegionInfo struct {
 	ApproximateKeys int64            `json:"approximate_keys"`
 
 	ReplicationStatus *ReplicationStatus `json:"replication_status,omitempty"`
+	GuardValue        string             `json:"guard_value"`
 }
 
 // RegionsInfo stores the information of regions.

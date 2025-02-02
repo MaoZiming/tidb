@@ -3239,6 +3239,7 @@ func buildTableRegionsSchema() (*expression.Schema, types.NameSlice) {
 	schema.Append(buildColumnWithName("", "APPROXIMATE_KEYS", mysql.TypeLonglong, 4))
 	schema.Append(buildColumnWithName("", "SCHEDULING_CONSTRAINTS", mysql.TypeVarchar, 256))
 	schema.Append(buildColumnWithName("", "SCHEDULING_STATE", mysql.TypeVarchar, 16))
+	schema.Append(buildColumnWithName("", "GUARD", mysql.TypeVarchar, 64))
 	return schema.col2Schema(), schema.names
 }
 

@@ -1042,6 +1042,7 @@ var TableTiKVRegionStatusCols = []columnInfo{
 	{name: "APPROXIMATE_KEYS", tp: mysql.TypeLonglong, size: 21},
 	{name: "REPLICATIONSTATUS_STATE", tp: mysql.TypeVarchar, size: 64},
 	{name: "REPLICATIONSTATUS_STATEID", tp: mysql.TypeLonglong, size: 21},
+	{name: "GUARD_VALUE", tp: mysql.TypeVarchar, size: 64},
 }
 
 // TableTiKVRegionPeersCols is TiKV region peers mem table columns.

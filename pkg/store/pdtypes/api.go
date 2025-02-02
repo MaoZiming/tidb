@@ -89,6 +89,7 @@ type RegionInfo struct {
 	ApproximateKeys int64         `json:"approximate_keys"`
 
 	ReplicationStatus *ReplicationStatus `json:"replication_status,omitempty"`
+	GuardValue        string             `json:"guard_value"`
 }
 
 // MetaPeer is api compatible with *metapb.Peer.
