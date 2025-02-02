@@ -28,6 +28,7 @@ import (
 
 	"github.com/docker/go-units"
 	"github.com/pingcap/errors"
+	"github.com/pingcap/log"
 	"github.com/pingcap/tidb/br/pkg/utils"
 	"github.com/pingcap/tidb/pkg/bindinfo"
 	"github.com/pingcap/tidb/pkg/config"
@@ -83,6 +84,7 @@ import (
 	"github.com/pingcap/tidb/pkg/util/sqlexec"
 	"github.com/pingcap/tidb/pkg/util/stringutil"
 	"github.com/tikv/client-go/v2/oracle"
+	"go.uber.org/zap"
 )
 
 var etcdDialTimeout = 5 * time.Second
@@ -2196,6 +2198,22 @@ func getTableIndexRegions(indexInfo *model.IndexInfo, physicalIDs []int64, tikvS
 
 func (e *ShowExec) fillRegionsToChunk(regions []showTableRegionRowItem) {
 	for i := range regions {
+
+		log.Info("fillRegionsToChunk",
+			zap.Uint64("region_id", regions[i].region.Id),
+			zap.String("start_key", regions[i].start),
+			zap.String("end_key", regions[i].end),
+			zap.Uint64("leader_id", regions[i].leaderID),
+			zap.Uint64("store_id", regions[i].storeID),
+			zap.Uint64("written_bytes", regions[i].writtenBytes),
+			zap.Uint64("read_bytes", regions[i].readBytes),
+			zap.Int64("approximate_size", regions[i].approximateSize),
+			zap.Int64("approximate_keys", regions[i].approximateKeys),
+			zap.String("scheduling_constraints", regions[i].schedulingConstraints),
+			zap.String("scheduling_state", regions[i].schedulingState),
+			zap.String("guard_value", regions[i].guardValue),
+		)
+
 		e.result.AppendUint64(0, regions[i].region.Id)
 		e.result.AppendString(1, regions[i].start)
 		e.result.AppendString(2, regions[i].end)
