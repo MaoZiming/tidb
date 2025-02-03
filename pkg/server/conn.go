@@ -1442,11 +1442,14 @@ func (cc *clientConn) flush(ctx context.Context) error {
 }
 
 func (cc *clientConn) writeOK(ctx context.Context) error {
-	return cc.writeOkWith(ctx, mysql.OKHeader, true, cc.ctx.Status())
+	return cc.writeOkWith(ctx, mysql.OKHeader, true, cc.ctx.Status(), "")
 }
 
-func (cc *clientConn) writeOkWith(ctx context.Context, header byte, flush bool, status uint16) error {
-	msg := cc.ctx.LastMessage()
+func (cc *clientConn) writeOkWith(ctx context.Context, header byte, flush bool, status uint16, msg string) error {
+	if msg == "" {
+		msg = cc.ctx.LastMessage()
+	}
+
 	affectedRows := cc.ctx.AffectedRows()
 	lastInsertID := cc.ctx.LastInsertID()
 	warnCnt := cc.ctx.WarningCount()
@@ -1528,7 +1531,7 @@ func (cc *clientConn) writeError(ctx context.Context, e error) error {
 // Note: it is callers' responsibility to ensure correctness of serverStatus.
 func (cc *clientConn) writeEOF(ctx context.Context, serverStatus uint16) error {
 	if cc.capability&mysql.ClientDeprecateEOF > 0 {
-		return cc.writeOkWith(ctx, mysql.EOFHeader, false, serverStatus)
+		return cc.writeOkWith(ctx, mysql.EOFHeader, false, serverStatus, "")
 	}
 
 	data := cc.alloc.AllocWithLen(4, 9)
@@ -1766,6 +1769,30 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 
 	// Print or log the raw SQL statement
 	fmt.Println("Raw SQL:", sql)
+
+	/* Handle set guard */
+
+	// Convert SQL to lowercase for case-insensitive parsing
+	lowerSQL := strings.ToLower(strings.TrimSpace(sql))
+
+	// Define a regex pattern for "UPDATE GUARD REGION"
+	updateGuardPattern := regexp.MustCompile(`\s*update\s+guard\s+region\s+(\d+)\s+(\S+)\s*$`)
+
+	// Check if the query matches the "UPDATE GUARD REGION" pattern
+	match_guard := updateGuardPattern.FindStringSubmatch(lowerSQL)
+	if len(match_guard) > 2 {
+		regionID := match_guard[1]
+		guardValue := match_guard[2]
+
+		// Store the extracted values
+		cc.ctx.GetSessionVars().SetGuard(guardValue)
+
+		// Construct a message response
+		message := fmt.Sprintf("Updated guard %s for region %s", guardValue, regionID)
+
+		// Return OK with the message
+		return cc.writeOkWith(ctx, mysql.OKHeader, true, cc.ctx.Status(), message)
+	}
 
 	guardPattern := regexp.MustCompile(`\s*GUARD\s+(\d+|[a-zA-Z_]+)\s*$`)
 
@@ -2202,7 +2229,7 @@ func (cc *clientConn) handleFileTransInConn(ctx context.Context, status uint16) 
 			return handled, err
 		}
 	}
-	return handled, cc.writeOkWith(ctx, mysql.OKHeader, true, status)
+	return handled, cc.writeOkWith(ctx, mysql.OKHeader, true, status, "")
 }
 
 // handleFieldList returns the field list for a table.
