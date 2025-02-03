@@ -1767,7 +1767,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 	// Print or log the raw SQL statement
 	fmt.Println("Raw SQL:", sql)
 
-	guardPattern := regexp.MustCompile(`\s*GUARD\s+(\d+)\s*$`)
+	guardPattern := regexp.MustCompile(`\s*GUARD\s+(\d+|[a-zA-Z_]+)\s*$`)
 
 	var guardValue string
 	match := guardPattern.FindStringSubmatch(sql)
