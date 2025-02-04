@@ -320,7 +320,7 @@ replace (
 	sourcegraph.com/sourcegraph/appdash-data => github.com/sourcegraph/appdash-data v0.0.0-20151005221446-73f23eafcf67
 )
 
-replace github.com/pingcap/kvproto => github.com/MaoZiming/kvproto v0.0.0-20250204014654-32c030629369
+replace github.com/pingcap/kvproto => github.com/MaoZiming/kvproto v0.0.0-20250204172851-0248babf0db2
 
 replace github.com/pingcap/tipb => github.com/MaoZiming/tipb v0.0.0-20240507090649-2bf6bb0cb996
 
