@@ -1761,6 +1761,13 @@ func (cc *clientConn) audit(eventType plugin.GeneralEvent) {
 	}
 }
 
+func (cc *clientConn) writeGuardToTiKV(ctx context.Context, regionID string, guardValue string) (err error) {
+
+	cc.ctx.UpdateGuard(ctx, regionID, guardValue)
+
+	return cc.writeOK(ctx)
+}
+
 // handleQuery executes the sql query string and writes result set or result ok to the client.
 // As the execution time of this function represents the performance of TiDB, we do time log and metrics here.
 // Some special queries like `load data` that does not return result, which is handled in handleFileTransInConn.
@@ -1784,8 +1791,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 		regionID := match_guard[1]
 		guardValue := match_guard[2]
 
-		// Store the extracted values
-		cc.ctx.GetSessionVars().SetGuard(guardValue)
+		cc.writeGuardToTiKV(ctx, regionID, guardValue)
 
 		// Construct a message response
 		message := fmt.Sprintf("Updated guard %s for region %s", guardValue, regionID)

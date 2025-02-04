@@ -279,6 +279,10 @@ func (tc *TiDBContext) checkSandBoxMode(stmt ast.StmtNode) error {
 	return nil
 }
 
+func (tc *TiDBContext) UpdateGuard(ctx context.Context, regionID string, guardValue string) {
+
+}
+
 // ExecuteStmt implements QueryCtx interface.
 func (tc *TiDBContext) ExecuteStmt(ctx context.Context, stmt ast.StmtNode) (resultset.ResultSet, error) {
 	var rs sqlexec.RecordSet

@@ -125,6 +125,7 @@ type Session interface {
 	Execute(context.Context, string) ([]sqlexec.RecordSet, error) // Execute a sql statement.
 	// ExecuteStmt executes a parsed statement.
 	ExecuteStmt(context.Context, ast.StmtNode) (sqlexec.RecordSet, error)
+	UpdateGuard(context.Context, string, string)
 	// Parse is deprecated, use ParseWithParams() instead.
 	Parse(ctx context.Context, sql string) ([]ast.StmtNode, error)
 	// ExecuteInternal is a helper around ParseWithParams() and ExecuteStmt(). It is not allowed to execute multiple statements.
@@ -2149,6 +2150,10 @@ func (s *session) ExecuteInternalStmt(ctx context.Context, stmtNode ast.StmtNode
 		pprof.SetGoroutineLabels(ctx)
 	}()
 	return s.ExecuteStmt(ctx, stmtNode)
+}
+
+func (s *session) UpdateGuard(ctx context.Context, regionID string, guardValue string) {
+
 }
 
 func (s *session) ExecuteStmt(ctx context.Context, stmtNode ast.StmtNode) (sqlexec.RecordSet, error) {

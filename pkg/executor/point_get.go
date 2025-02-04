@@ -214,6 +214,9 @@ func (e *PointGetExecutor) Close() error {
 // Next implements the Executor interface.
 func (e *PointGetExecutor) Next(ctx context.Context, req *chunk.Chunk) error {
 	req.Reset()
+
+	fmt.Println("PointGetExecutor: Next", e.Base().GuardValue)
+
 	if e.done {
 		return nil
 	}
@@ -448,6 +451,10 @@ func (e *PointGetExecutor) getValueFromLockCtx(ctx context.Context,
 // get will first try to get from txn buffer, then check the pessimistic lock cache,
 // then the store. Kv.ErrNotExist will be returned if key is not found
 func (e *PointGetExecutor) get(ctx context.Context, key kv.Key) ([]byte, error) {
+
+	guard_value := e.Base().GuardValue
+	ctx = context.WithValue(ctx, "guardValue", guard_value)
+
 	if len(key) == 0 {
 		return nil, kv.ErrNotExist
 	}
