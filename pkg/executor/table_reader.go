@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"cmp"
 	"context"
+	"fmt"
 	"slices"
 	"time"
 
@@ -242,6 +243,10 @@ func (e *TableReaderExecutor) Next(ctx context.Context, req *chunk.Chunk) error 
 		req.Reset()
 		return nil
 	}
+
+	fmt.Println("TableReaderExecutor: Next", e.Base().GuardValue)
+	guard_value := e.Base().GuardValue
+	ctx = context.WithValue(ctx, "guardValue", guard_value)
 
 	logutil.Eventf(ctx, "table scan table: %s, range: %v", stringutil.MemoizeStr(func() string {
 		var tableName string

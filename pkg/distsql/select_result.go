@@ -189,6 +189,9 @@ func (*sortedSelectResults) NextRaw(context.Context) ([]byte, error) {
 }
 
 func (ssr *sortedSelectResults) Next(ctx context.Context, c *chunk.Chunk) (err error) {
+
+	fmt.Println("sortedSelectResults")
+
 	c.Reset()
 	for i := range ssr.cachedChunks {
 		if ssr.cachedChunks[i] == nil {
@@ -264,6 +267,9 @@ func (ssr *serialSelectResults) NextRaw(ctx context.Context) ([]byte, error) {
 }
 
 func (ssr *serialSelectResults) Next(ctx context.Context, chk *chunk.Chunk) error {
+
+	fmt.Println("sortedSelectResults")
+
 	for ssr.cur < len(ssr.selectResults) {
 		if err := ssr.selectResults[ssr.cur].Next(ctx, chk); err != nil {
 			return err
