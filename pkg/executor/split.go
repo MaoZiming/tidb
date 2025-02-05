@@ -816,7 +816,7 @@ func getRegionMeta(tikvStore helper.Storage, regionMetas []*tikv.Region, uniqueR
 // parseGuardValue function
 func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
 	// Regular expression to match `name(hex_start,hex_end)`
-	re := regexp.MustCompile(`(\w+)$begin:math:text$([^,]+),([^)]+)$end:math:text$`)
+	re := regexp.MustCompile(`([\w:]+)$begin:math:text$([^,]+),([^)]+)$end:math:text$`)
 	matches := re.FindAllStringSubmatch(guardValue, -1)
 
 	var results []string
@@ -831,19 +831,24 @@ func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
 		endHex := match[3]
 
 		// Decode hex values
-		startKey, _ := hex.DecodeString(startHex)
+		var startKey []byte
 		var endKey []byte
-		if endHex != "END" {
+		var startDecoded string
+		var endDecoded string
+
+		if startHex != ":" {
+			startKey, _ = hex.DecodeString(startHex)
+			startDecoded = decoder.decodeRegionKey(startKey)
+		} else {
+			startDecoded = ":"
+		}
+
+		if endHex != ":" {
 			endKey, _ = hex.DecodeString(endHex)
-		}
-
-		// Convert using `decodeRegionKey`
-		startDecoded := decoder.decodeRegionKey(startKey)
-		endDecoded := "END"
-		if len(endKey) > 0 {
 			endDecoded = decoder.decodeRegionKey(endKey)
+		} else {
+			endDecoded = ":"
 		}
-
 		// Format output
 		results = append(results, fmt.Sprintf("%s(%s,%s)", name, startDecoded, endDecoded))
 	}
