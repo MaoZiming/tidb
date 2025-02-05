@@ -1800,7 +1800,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 		return cc.writeOkWith(ctx, mysql.OKHeader, true, cc.ctx.Status(), message)
 	}
 
-	guardPattern := regexp.MustCompile(`\s*GUARD\s+(\d+|[a-zA-Z_]+)\s*$`)
+	guardPattern := regexp.MustCompile(`\s*GUARD\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*$`)
 
 	var guardValue string
 	match := guardPattern.FindStringSubmatch(sql)

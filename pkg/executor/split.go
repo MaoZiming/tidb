@@ -18,8 +18,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"math"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/pingcap/kvproto/pkg/metapb"
@@ -714,19 +717,11 @@ func checkRegionsStatus(store kv.SplittableStore, regions []regionMeta) error {
 	return nil
 }
 
-func decodeRegionsKey(regions []regionMeta, tablePrefix, recordPrefix, indexPrefix []byte,
-	physicalTableID, indexID int64, hasUnsignedIntHandle bool) {
-	d := &regionKeyDecoder{
-		physicalTableID:      physicalTableID,
-		tablePrefix:          tablePrefix,
-		recordPrefix:         recordPrefix,
-		indexPrefix:          indexPrefix,
-		indexID:              indexID,
-		hasUnsignedIntHandle: hasUnsignedIntHandle,
-	}
+func decodeRegionsKey(regions []regionMeta, decoder *regionKeyDecoder) {
+
 	for i := range regions {
-		regions[i].start = d.decodeRegionKey(regions[i].region.StartKey)
-		regions[i].end = d.decodeRegionKey(regions[i].region.EndKey)
+		regions[i].start = decoder.decodeRegionKey(regions[i].region.StartKey)
+		regions[i].end = decoder.decodeRegionKey(regions[i].region.EndKey)
 	}
 }
 
@@ -801,15 +796,61 @@ func getRegionMeta(tikvStore helper.Storage, regionMetas []*tikv.Region, uniqueR
 			})
 	}
 
-	regions, err := getRegionInfo(tikvStore, regions)
+	decoder := &regionKeyDecoder{
+		physicalTableID:      physicalTableID,
+		tablePrefix:          tablePrefix,
+		recordPrefix:         recordPrefix,
+		indexPrefix:          indexPrefix,
+		indexID:              indexID,
+		hasUnsignedIntHandle: hasUnsignedIntHandle,
+	}
+
+	regions, err := getRegionInfo(tikvStore, regions, decoder)
 	if err != nil {
 		return regions, err
 	}
-	decodeRegionsKey(regions, tablePrefix, recordPrefix, indexPrefix, physicalTableID, indexID, hasUnsignedIntHandle)
+	decodeRegionsKey(regions, decoder)
 	return regions, nil
 }
 
-func getRegionInfo(store helper.Storage, regions []regionMeta) ([]regionMeta, error) {
+// parseGuardValue function
+func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
+	// Regular expression to match `name(hex_start,hex_end)`
+	re := regexp.MustCompile(`(\w+)$begin:math:text$([^,]+),([^)]+)$end:math:text$`)
+	matches := re.FindAllStringSubmatch(guardValue, -1)
+
+	var results []string
+
+	for _, match := range matches {
+		if len(match) < 4 {
+			continue
+		}
+
+		name := match[1]
+		startHex := match[2]
+		endHex := match[3]
+
+		// Decode hex values
+		startKey, _ := hex.DecodeString(startHex)
+		var endKey []byte
+		if endHex != "END" {
+			endKey, _ = hex.DecodeString(endHex)
+		}
+
+		// Convert using `decodeRegionKey`
+		startDecoded := decoder.decodeRegionKey(startKey)
+		endDecoded := "END"
+		if len(endKey) > 0 {
+			endDecoded = decoder.decodeRegionKey(endKey)
+		}
+
+		// Format output
+		results = append(results, fmt.Sprintf("%s(%s,%s)", name, startDecoded, endDecoded))
+	}
+	return strings.Join(results, ", ")
+}
+
+func getRegionInfo(store helper.Storage, regions []regionMeta, decoder *regionKeyDecoder) ([]regionMeta, error) {
 
 	log.Info("Entering getRegionInfo", zap.Int("region_count", len(regions)))
 
@@ -848,7 +889,7 @@ func getRegionInfo(store helper.Storage, regions []regionMeta) ([]regionMeta, er
 		regions[i].readBytes = regionInfo.ReadBytes
 		regions[i].approximateSize = regionInfo.ApproximateSize
 		regions[i].approximateKeys = regionInfo.ApproximateKeys
-		regions[i].guardValue = regionInfo.GuardValue
+		regions[i].guardValue = parseGuardValue(regionInfo.GuardValue, decoder)
 	}
 	return regions, nil
 }

@@ -421,6 +421,9 @@ func (r *selectResult) fetchResp(ctx context.Context) error {
 }
 
 func (r *selectResult) Next(ctx context.Context, chk *chunk.Chunk) error {
+
+	fmt.Println("selectResult")
+
 	chk.Reset()
 	if r.selectResp == nil || r.respChkIdx == len(r.selectResp.Chunks) {
 		err := r.fetchResp(ctx)
