@@ -859,7 +859,7 @@ func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
 		// Format output
 		results = append(results, fmt.Sprintf("%s(%s,%s)", name, startDecoded, endDecoded))
 	}
-	return strings.Join(results, ", ")
+	return strings.Join(results, ",")
 }
 
 func getRegionInfo(store helper.Storage, regions []regionMeta, decoder *regionKeyDecoder) ([]regionMeta, error) {
