@@ -1300,7 +1300,7 @@ func (cc *clientConn) dispatch(ctx context.Context, data []byte) error {
 	dataStr := string(hack.String(data))
 
 	// 🔍 **Log the command and query data**
-	fmt.Println("Received MySQL Command:", cmd, "dataStr:", dataStr)
+	// fmt.Println("Received MySQL Command:", cmd, "dataStr:", dataStr)
 
 	switch cmd {
 	case mysql.ComPing, mysql.ComStmtClose, mysql.ComStmtSendLongData, mysql.ComStmtReset,
@@ -1783,7 +1783,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 	defer trace.StartRegion(ctx, "handleQuery").End()
 
 	// Print or log the raw SQL statement
-	fmt.Println("Raw SQL:", sql)
+	// fmt.Println("Raw SQL:", sql)
 
 	/* Handle set guard */
 
@@ -1820,7 +1820,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 		sql = strings.TrimSpace(guardPattern.ReplaceAllString(sql, ""))
 	}
 
-	fmt.Println("Processed SQL:", sql)
+	// fmt.Println("Processed SQL:", sql)
 	if guardValue != "" {
 		fmt.Println("Extracted Guard Value:", guardValue)
 	}
