@@ -1296,6 +1296,10 @@ func (cc *clientConn) dispatch(ctx context.Context, data []byte) error {
 	}
 
 	dataStr := string(hack.String(data))
+
+	// 🔍 **Log the command and query data**
+	fmt.Println("Received MySQL Command:", cmd, "dataStr:", dataStr)
+
 	switch cmd {
 	case mysql.ComPing, mysql.ComStmtClose, mysql.ComStmtSendLongData, mysql.ComStmtReset,
 		mysql.ComSetOption, mysql.ComChangeUser:
