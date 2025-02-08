@@ -958,6 +958,8 @@ func (cc *clientConn) initConnect(ctx context.Context) error {
 		return nil
 	}
 	logutil.Logger(ctx).Debug("init_connect starting")
+	fmt.Println("initConnect Parse")
+
 	stmts, err := cc.ctx.Parse(ctx, val)
 	if err != nil {
 		return err
@@ -1400,6 +1402,8 @@ func (cc *clientConn) writeStats(ctx context.Context) error {
 func (cc *clientConn) useDB(ctx context.Context, db string) (node ast.StmtNode, err error) {
 	// if input is "use `SELECT`", mysql client just send "SELECT"
 	// so we add `` around db.
+
+	fmt.Println("useDB")
 	stmts, err := cc.ctx.Parse(ctx, "use `"+db+"`")
 	if err != nil {
 		return nil, err

@@ -448,6 +448,8 @@ func (tc *TiDBContext) DecodeSessionStates(ctx context.Context, _ sessionctx.Con
 			stmtText = strings.ReplaceAll(stmtText, "'", "\\'")
 			// Add single quotes because the sql_mode might contain ANSI_QUOTES.
 			sql := fmt.Sprintf("PREPARE `%s` FROM '%s'", preparedStmtInfo.Name, stmtText)
+
+			fmt.Println("DecodeSessionStates")
 			stmts, err := tc.Parse(ctx, sql)
 			if err != nil {
 				return err

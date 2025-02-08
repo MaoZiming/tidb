@@ -1688,6 +1688,7 @@ func (s *session) Execute(ctx context.Context, sql string) (recordSets []sqlexec
 	defer r.End()
 	logutil.Eventf(ctx, "execute: %s", sql)
 
+	fmt.Println("Execute?")
 	stmtNodes, err := s.Parse(ctx, sql)
 	if err != nil {
 		return nil, err
