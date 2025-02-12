@@ -324,4 +324,4 @@ replace github.com/pingcap/kvproto => github.com/MaoZiming/kvproto v0.0.0-202502
 
 replace github.com/pingcap/tipb => github.com/MaoZiming/tipb v0.0.0-20240507090649-2bf6bb0cb996
 
-replace github.com/tikv/client-go/v2 => github.com/MaoZiming/client-go/v2 v2.0.0-20250208183413-2a714642d986
+replace github.com/tikv/client-go/v2 => github.com/MaoZiming/client-go/v2 v2.0.0-20250212020404-ed989251ea90
