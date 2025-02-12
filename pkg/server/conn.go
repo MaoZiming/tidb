@@ -1820,7 +1820,7 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 		sql = strings.TrimSpace(guardPattern.ReplaceAllString(sql, ""))
 	}
 
-	// fmt.Println("Processed SQL:", sql)
+	fmt.Println("Processed SQL:", sql)
 	if guardValue != "" {
 		fmt.Println("Extracted Guard Value:", guardValue)
 	}

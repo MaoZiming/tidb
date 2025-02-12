@@ -1011,8 +1011,6 @@ const MockResponseSizeForTest = 100 * 1024 * 1024
 // NOTE: Use nil to indicate finish, so if the returned ResultSubset is not nil, reader should continue to call Next().
 func (it *copIterator) Next(ctx context.Context) (kv.ResultSubset, error) {
 
-	fmt.Println("copIterator Next")
-
 	var (
 		resp   *copResponse
 		ok     bool
@@ -1151,8 +1149,6 @@ func (worker *copIteratorWorker) handleTaskOnce(bo *Backoffer, task *copTask, ch
 			failpoint.Return(nil, errors.New("mock handleTaskOnce error"))
 		}
 	})
-
-	fmt.Println("copIteratorWorker handleTaskOnce")
 
 	if task.paging {
 		task.pagingTaskIdx = atomic.AddUint32(worker.pagingTaskIdx, 1)
