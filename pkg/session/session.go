@@ -2160,10 +2160,10 @@ func (s *session) UpdateGuard(ctx context.Context, regionID string, guardValue s
 func (s *session) ExecuteStmt(ctx context.Context, stmtNode ast.StmtNode) (sqlexec.RecordSet, error) {
 	r, ctx := tracing.StartRegionEx(ctx, "session.ExecuteStmt")
 
-	guardValue := s.sessionVars.GuardValue
-	if guardValue != "" {
-		fmt.Println("ExecuteStmt Guard Value: ", guardValue)
-	}
+	// guardValue := s.sessionVars.GuardValue
+	// if guardValue != "" {
+	// 	fmt.Println("ExecuteStmt Guard Value: ", guardValue)
+	// }
 
 	defer r.End()
 
@@ -2420,18 +2420,18 @@ func runStmt(ctx context.Context, se *session, s sqlexec.Statement) (rs sqlexec.
 	se.SetValue(sessionctx.QueryString, s.OriginText())
 
 	// Print QueryString.
-	val := se.Value(sessionctx.QueryString)
-	sqlText, ok := val.(string)
-	if !ok {
-		fmt.Println("No SQL text found or not a string")
-	} else {
-		fmt.Println("SQL text:", sqlText)
-	}
+	// val := se.Value(sessionctx.QueryString)
+	// sqlText, ok := val.(string)
+	// if !ok {
+	// 	fmt.Println("No SQL text found or not a string")
+	// } else {
+	// 	fmt.Println("SQL text:", sqlText)
+	// }
 
-	guardValue := se.sessionVars.GuardValue
-	if guardValue != "" {
-		fmt.Println("runStmt Guard Value: ", guardValue)
-	}
+	// guardValue := se.sessionVars.GuardValue
+	// if guardValue != "" {
+	// 	fmt.Println("runStmt Guard Value: ", guardValue)
+	// }
 
 	if _, ok := s.(*executor.ExecStmt).StmtNode.(ast.DDLNode); ok {
 		se.SetValue(sessionctx.LastExecuteDDL, true)

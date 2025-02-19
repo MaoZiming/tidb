@@ -1820,15 +1820,15 @@ func (cc *clientConn) handleQuery(ctx context.Context, sql string) (err error) {
 		sql = strings.TrimSpace(guardPattern.ReplaceAllString(sql, ""))
 	}
 
-	fmt.Println("Processed SQL:", sql)
-	if guardValue != "" {
-		fmt.Println("Extracted Guard Value:", guardValue)
-	}
+	// fmt.Println("Processed SQL:", sql)
+	// if guardValue != "" {
+	// 	fmt.Println("Extracted Guard Value:", guardValue)
+	// }
 	cc.ctx.GetSessionVars().SetGuard(guardValue)
 
-	if guardValue != "" {
-		fmt.Println("Stored Guard Value:", cc.ctx.GetSessionVars().GuardValue)
-	}
+	// if guardValue != "" {
+	// 	fmt.Println("Stored Guard Value:", cc.ctx.GetSessionVars().GuardValue)
+	// }
 
 	sessVars := cc.ctx.GetSessionVars()
 	sc := sessVars.StmtCtx
