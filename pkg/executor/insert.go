@@ -306,6 +306,7 @@ func (e *InsertExec) Next(ctx context.Context, req *chunk.Chunk) error {
 	if e.collectRuntimeStatsEnabled() {
 		ctx = context.WithValue(ctx, autoid.AllocatorRuntimeStatsCtxKey, e.stats.AllocatorRuntimeStats)
 	}
+	ctx = context.WithValue(ctx, "guardValue", e.Base().GuardValue)
 	if !e.EmptyChildren() && e.Children(0) != nil {
 		return insertRowsFromSelect(ctx, e)
 	}
