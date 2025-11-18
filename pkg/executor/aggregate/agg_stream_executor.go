@@ -16,7 +16,7 @@ package aggregate
 
 import (
 	"context"
-	"fmt"
+	// "fmt"
 
 	"github.com/pingcap/errors"
 	"github.com/pingcap/failpoint"
