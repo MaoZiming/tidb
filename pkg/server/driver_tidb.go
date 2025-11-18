@@ -291,11 +291,6 @@ func (tc *TiDBContext) ExecuteStmt(ctx context.Context, stmt ast.StmtNode) (resu
 		return nil, err
 	}
 
-	guardValue := tc.GetSessionVars().GuardValue
-	if guardValue != "" {
-		fmt.Println("ExecuteStmt:", guardValue)
-	}
-
 	if s, ok := stmt.(*ast.NonTransactionalDMLStmt); ok {
 		rs, err = session.HandleNonTransactionalDML(ctx, s, tc.Session)
 	} else {
@@ -448,8 +443,6 @@ func (tc *TiDBContext) DecodeSessionStates(ctx context.Context, _ sessionctx.Con
 			stmtText = strings.ReplaceAll(stmtText, "'", "\\'")
 			// Add single quotes because the sql_mode might contain ANSI_QUOTES.
 			sql := fmt.Sprintf("PREPARE `%s` FROM '%s'", preparedStmtInfo.Name, stmtText)
-
-			fmt.Println("DecodeSessionStates")
 			stmts, err := tc.Parse(ctx, sql)
 			if err != nil {
 				return err

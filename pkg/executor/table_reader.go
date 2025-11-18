@@ -244,7 +244,6 @@ func (e *TableReaderExecutor) Next(ctx context.Context, req *chunk.Chunk) error 
 		return nil
 	}
 
-	fmt.Println("TableReaderExecutor: Next", e.Base().GuardValue)
 	guard_value := e.Base().GuardValue
 	ctx = context.WithValue(ctx, "guardValue", guard_value)
 

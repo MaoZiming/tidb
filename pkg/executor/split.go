@@ -830,13 +830,6 @@ func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
 		name := match[1]
 		startHex := match[2]
 		endHex := match[3]
-
-		log.Info("Parsed guard value",
-			zap.String("name", name),
-			zap.String("startHex", startHex),
-			zap.String("endHex", endHex),
-		)
-
 		// Decode hex values
 		var startKey []byte
 		var endKey []byte
@@ -863,9 +856,6 @@ func parseGuardValue(guardValue string, decoder *regionKeyDecoder) string {
 }
 
 func getRegionInfo(store helper.Storage, regions []regionMeta, decoder *regionKeyDecoder) ([]regionMeta, error) {
-
-	log.Info("Entering getRegionInfo", zap.Int("region_count", len(regions)))
-
 	// check pd server exists.
 	etcd, ok := store.(kv.EtcdBackend)
 	if !ok {
@@ -887,16 +877,6 @@ func getRegionInfo(store helper.Storage, regions []regionMeta, decoder *regionKe
 		if err != nil {
 			return nil, err
 		}
-
-		log.Info("Fetched region info",
-			zap.Uint64("region_id", regions[i].region.Id),
-			zap.Uint64("written_bytes", regionInfo.WrittenBytes),
-			zap.Uint64("read_bytes", regionInfo.ReadBytes),
-			zap.Int64("approximate_size", regionInfo.ApproximateSize),
-			zap.Int64("approximate_keys", regionInfo.ApproximateKeys),
-			zap.String("guard_value", regionInfo.GuardValue),
-		)
-
 		regions[i].writtenBytes = regionInfo.WrittenBytes
 		regions[i].readBytes = regionInfo.ReadBytes
 		regions[i].approximateSize = regionInfo.ApproximateSize

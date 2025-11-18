@@ -783,13 +783,9 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 	txnTempTables := sessVars.TxnCtx.TemporaryTables
 
 	guardValue := s.sessionVars.GuardValue
-	if guardValue != "" {
-		fmt.Println("commitTxnWithTemporaryData Guard Value:", guardValue)
-	}
 
 	ctx = context.WithValue(ctx, "guardValue", guardValue) // Store it in context
 	guardValue_, _ := ctx.Value("guardValue").(string)
-	fmt.Println("GuardValue from context:", guardValue_)
 
 	if len(txnTempTables) == 0 {
 		failpoint.Inject("mockSleepBeforeTxnCommit", func(v failpoint.Value) {
@@ -869,11 +865,6 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 
 	// Print value
 	val := s.Value(sessionctx.QueryString)
-	if val != nil {
-		fmt.Printf("Query string is: %v\n", val)
-	} else {
-		fmt.Println("No query string found in session values")
-	}
 
 	err := txn.Commit(ctx)
 	if err != nil {
@@ -1688,7 +1679,6 @@ func (s *session) Execute(ctx context.Context, sql string) (recordSets []sqlexec
 	defer r.End()
 	logutil.Eventf(ctx, "execute: %s", sql)
 
-	fmt.Println("Execute?")
 	stmtNodes, err := s.Parse(ctx, sql)
 	if err != nil {
 		return nil, err

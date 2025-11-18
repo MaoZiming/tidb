@@ -204,11 +204,6 @@ func insertRows(ctx context.Context, base insertCommon) (err error) {
 	sessVars := e.Ctx().GetSessionVars()
 	batchSize := sessVars.DMLBatchSize
 	batchInsert := sessVars.BatchInsert && !sessVars.InTxn() && variable.EnableBatchDML.Load() && batchSize > 0
-
-	fmt.Println("insertRows: ", sessVars.GuardValue)
-	guardValue_, _ := ctx.Value("guardValue").(string)
-	fmt.Println("GuardValue in context at insertRows:", guardValue_)
-
 	e.lazyFillAutoID = true
 	evalRowFunc := e.fastEvalRow
 	if !e.allAssignmentsAreConstant {
@@ -1410,8 +1405,6 @@ func (e *InsertValues) addRecordWithAutoIDHint(
 	ctx context.Context, row []types.Datum, reserveAutoIDCount int,
 ) (err error) {
 	vars := e.Ctx().GetSessionVars()
-
-	fmt.Println("addRecordWithAutoIDHint", vars.GuardValue)
 	if !vars.ConstraintCheckInPlace {
 		vars.PresumeKeyNotExists = true
 	}

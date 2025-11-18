@@ -1031,9 +1031,6 @@ func (t *TableCommon) AddRecord(sctx sessionctx.Context, r []types.Datum, opts .
 		}
 	}
 
-	guardValue := sessVars.GuardValue // Retrieve GuardValue
-	fmt.Println("GuardValue at memBuffer.Set:", guardValue)
-
 	if setPresume {
 		flags := []kv.FlagsOp{kv.SetPresumeKeyNotExists}
 		if !sessVars.ConstraintCheckInPlacePessimistic && sessVars.TxnCtx.IsPessimistic && sessVars.InTxn() &&
@@ -1042,7 +1039,6 @@ func (t *TableCommon) AddRecord(sctx sessionctx.Context, r []types.Datum, opts .
 		}
 		err = memBuffer.SetWithFlags(key, value, flags...)
 	} else {
-		fmt.Println("memBuffer.Set(key, value): ", guardValue)
 		err = memBuffer.Set(key, value)
 	}
 	if err != nil {

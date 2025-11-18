@@ -442,10 +442,6 @@ func IsFastPlan(p plannercore.Plan) bool {
 func (a *ExecStmt) Exec(ctx context.Context) (_ sqlexec.RecordSet, err error) {
 
 	guardValue := a.Ctx.GetSessionVars().GuardValue
-	if guardValue != "" {
-		fmt.Println("Exec Guard Value: ", guardValue)
-	}
-
 	defer func() {
 		r := recover()
 		if r == nil {
@@ -1208,12 +1204,7 @@ func (a *ExecStmt) buildExecutor() (exec.Executor, error) {
 func (a *ExecStmt) openExecutor(ctx context.Context, e exec.Executor) (err error) {
 
 	guardValue := a.Ctx.GetSessionVars().GuardValue
-	if guardValue != "" {
-		fmt.Println("openExecutor Guard Value: ", guardValue)
-	}
-
 	e.Base().GuardValue = guardValue
-	fmt.Printf("Executor Type: %T\n", e)
 
 	defer func() {
 		if r := recover(); r != nil {

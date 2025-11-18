@@ -3076,7 +3076,6 @@ func doBootstrapSQLFile(s Session) error {
 		}
 		logutil.BgLogger().Fatal("unable to read InitializeSQLFile", zap.Error(err))
 	}
-	fmt.Println("doBootstrapSQLFile")
 	stmts, err := s.Parse(ctx, string(b))
 	if err != nil {
 		if intest.InTest {

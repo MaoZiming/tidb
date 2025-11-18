@@ -65,7 +65,6 @@ func (e *StreamAggExec) Open(ctx context.Context) error {
 	}
 	// If panic in Open, the children executor should be closed because they are open.
 	defer closeBaseExecutor(&e.BaseExecutor)
-	fmt.Println("StreamAggExec: Open", e.Base().GuardValue)
 
 	e.childResult = exec.TryNewCacheChunk(e.Children(0))
 	e.executed = false
@@ -107,9 +106,6 @@ func (e *StreamAggExec) Close() error {
 // Next implements the Executor Next interface.
 func (e *StreamAggExec) Next(ctx context.Context, req *chunk.Chunk) (err error) {
 	req.Reset()
-
-	fmt.Println("StreamAggExec: Next", e.Base().GuardValue)
-
 	for !e.executed && !req.IsFull() {
 		err = e.consumeOneGroup(ctx, req)
 		if err != nil {

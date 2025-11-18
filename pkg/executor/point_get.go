@@ -214,9 +214,6 @@ func (e *PointGetExecutor) Close() error {
 // Next implements the Executor interface.
 func (e *PointGetExecutor) Next(ctx context.Context, req *chunk.Chunk) error {
 	req.Reset()
-
-	fmt.Println("PointGetExecutor: Next", e.Base().GuardValue)
-
 	if e.done {
 		return nil
 	}

@@ -67,10 +67,6 @@ func (e *InsertExec) exec(ctx context.Context, rows [][]types.Datum) error {
 	defer sessVars.CleanBuffers()
 	ignoreErr := sessVars.StmtCtx.DupKeyAsWarning
 
-	fmt.Println("InsertExec.exec: ", sessVars.GuardValue)
-	guardValue_, _ := ctx.Value("guardValue").(string)
-	fmt.Println("GuardValue in context at InsertExec.exec:", guardValue_)
-
 	txn, err := e.Ctx().Txn(true)
 	if err != nil {
 		return err
@@ -310,12 +306,6 @@ func (e *InsertExec) Next(ctx context.Context, req *chunk.Chunk) error {
 	if e.collectRuntimeStatsEnabled() {
 		ctx = context.WithValue(ctx, autoid.AllocatorRuntimeStatsCtxKey, e.stats.AllocatorRuntimeStats)
 	}
-
-	fmt.Println("InsertExec: Next", e.Base().GuardValue)
-	ctx = context.WithValue(ctx, "guardValue", e.Base().GuardValue) // Store it in context
-	guardValue_, _ := ctx.Value("guardValue").(string)
-	fmt.Println("GuardValue from context:", guardValue_)
-
 	if !e.EmptyChildren() && e.Children(0) != nil {
 		return insertRowsFromSelect(ctx, e)
 	}
@@ -351,7 +341,6 @@ func (e *InsertExec) Open(ctx context.Context) error {
 	e.memTracker = memory.NewTracker(e.ID(), -1)
 	e.memTracker.AttachTo(e.Ctx().GetSessionVars().StmtCtx.MemTracker)
 
-	fmt.Println("InsertExec: Open", e.Base().GuardValue)
 	if e.OnDuplicate != nil {
 		e.initEvalBuffer4Dup()
 	}
