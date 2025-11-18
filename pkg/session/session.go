@@ -785,7 +785,7 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 	guardValue := s.sessionVars.GuardValue
 
 	ctx = context.WithValue(ctx, "guardValue", guardValue) // Store it in context
-	guardValue_, _ := ctx.Value("guardValue").(string)
+	// guardValue_, _ := ctx.Value("guardValue").(string)
 
 	if len(txnTempTables) == 0 {
 		failpoint.Inject("mockSleepBeforeTxnCommit", func(v failpoint.Value) {
@@ -864,7 +864,7 @@ func (s *session) commitTxnWithTemporaryData(ctx context.Context, txn kv.Transac
 	}
 
 	// Print value
-	val := s.Value(sessionctx.QueryString)
+	// val := s.Value(sessionctx.QueryString)
 
 	err := txn.Commit(ctx)
 	if err != nil {
